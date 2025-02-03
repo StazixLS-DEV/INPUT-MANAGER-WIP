@@ -20,12 +20,23 @@ void Game::Start()
     M_CAMERA.CreateCamera("DefaultCamera"); 
     //M_CAMERA.CreateCamera(Vector2f(), Vector2f(300.0f, 300.0f), "DefaultCamera");
     M_ACTOR.BeginPlay();
-
     ActionMap* _actionMap = M_INPUT.CreateActionMap("Demo");
-    Action* _action = new Action("Test", ActionData(KeyboardPressed, CAST(int, Key::A)), [&]() { LOG(Display, "coucou"); });
-    Action* _action2 = new Action("Test2", ActionData(KeyboarReleased, CAST(int, Key::A)), [&]() { LOG(Warning, "coucou"); });
+    Action* _action = new Action("Test", ActionData(KeyPressed, CAST(int, Key::A)), [&]() { LOG(Display, "coucou"); });
+    Action* _action2 = new Action("Test2", ActionData(KeyReleased, CAST(int, Key::A)), [&]() { LOG(Warning, "coucou"); });
+    Action* _action3 = new Action("Test3", ActionData(KeyHold, CAST(int, Key::A)), [&]() { LOG(Error, "coucou"); });
+    Action* _action4 = new Action("Test4", ActionData(KeyPressed, CAST(int, Key::B)), [&]() { LOG(Display, "salut"); });
+    Action* _action5 = new Action("Test5", ActionData(KeyReleased, CAST(int, Key::B)), [&]() { LOG(Warning, "salut"); });
+    Action* _action6 = new Action("Test6", ActionData(KeyHold, CAST(int, Key::B)), [&]() { LOG(Error, "salut"); });
     _actionMap->AddAction(_action);
     _actionMap->AddAction(_action2);
+    _actionMap->AddAction(_action3);
+    _actionMap->AddAction(_action4);
+    _actionMap->AddAction(_action5);
+    _actionMap->AddAction(_action6);
+
+    //TODO y'a un bug qui fait que si on appuie sur une touche 
+    // pendant pendant un hold ca fait le hold de la deuxieme
+    // avant le pressed
     _actionMap->Enable();
 };
 

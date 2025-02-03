@@ -35,21 +35,6 @@ void Input::InputManager::Update(RenderWindow& _window)
         }
 
         UpdateActionMaps(_event);
-        if (_event->is<KeyPressed>() && !isKeyHolding)
-        {
-            isKeyHolding = true;
-        }
-        else if (_event->is<KeyReleased>() && isKeyHolding)
-        {
-            isKeyHolding = false;
-        }
-        else if (_event->is<MouseButtonPressed>() && !isButtonHolding)
-        {
-            isButtonHolding = true;
-        }
-        else if (_event->is<MouseButtonReleased>() && isButtonHolding)
-        {
-            isButtonHolding = false;
-        }
+        
     }
 }

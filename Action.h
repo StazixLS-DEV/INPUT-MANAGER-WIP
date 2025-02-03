@@ -3,15 +3,48 @@
 
 namespace Input
 {
+#pragma region Typedef & Using
 	typedef optional<Event> EventInfo;
 	using TypeIndex = type_index;
 	using Key = Keyboard::Key;
 
-	using KeyPressed = Event::KeyPressed;
-	using KeyReleased = Event::KeyReleased;
+	//Keyboard
+	using PressedKey = Event::KeyPressed;
+	using ReleasedKey = Event::KeyReleased;
 
-	using MouseButtonPressed = Event::MouseButtonPressed;
-	using MouseButtonReleased = Event::MouseButtonReleased;
+	//Mouse Button
+	using PressedMouseButton = Event::MouseButtonPressed;
+	using ReleasedMouseButton = Event::MouseButtonReleased;
+	//Mouse 
+	using ScrolledMouseWheel = Event::MouseWheelScrolled;
+	using MovedMouse = Event::MouseMoved;
+	using MovedRawMouse = Event::MouseMovedRaw;
+	using EnteredMouse= Event::MouseEntered;
+	using LeftMouse = Event::MouseLeft;
+
+	//Window
+	using ResizedWindow = Event::Resized;
+	using LostFocus = Event::FocusLost;
+	using GainedFocus = Event::FocusGained;
+	using EnteredText = Event::TextEntered;
+	using ClosedWindow = Event::Closed;
+
+	//Controler
+	using ControllerJoystickPressed = Event::JoystickButtonPressed;
+	using ControllerJoystickReleased = Event::JoystickButtonReleased;
+	using ControllerJoystickMoved = Event::JoystickMoved;
+	using ControllerJoystickConnected = Event::JoystickConnected;
+	using ControllerJoystickDisconnected = Event::JoystickDisconnected;
+
+	//Touch
+	using BeganTouch = Event::TouchBegan;
+	using MovedTouch = Event::TouchMoved;
+	using EndedTouch = Event::TouchEnded;
+	using ChangedSensor = Event::SensorChanged;
+	
+#pragma endregion
+
+	
 
 	enum ControllerButtonsType
 	{
@@ -31,12 +64,41 @@ namespace Input
 
 	enum ActionType
 	{
-		KeyboardPressed,
-		KeyboardHold,
-		KeyboarReleased,
-		ButtonPressed,
-		ButtonHold,
-		ButtonReleased,
+		//Keyboard
+		KeyPressed,
+		KeyHold,
+		KeyReleased,
+
+		//Mouse Button
+		MouseButtonPressed,
+		MouseButtonHold,
+		MouseButtonReleased,
+		//Mouse
+		MouseWheelScrolled,
+		MouseMoved,
+		MouseMovedRaw,
+		MouseEntered,
+		MouseLeft,
+
+		//Window
+		Resized,
+		FocusLost,
+		FocusGained,
+		TextEntered,
+		Closed,
+
+		//Controller
+		JoystickPressed,
+		JoystickReleased,
+		JoystickMoved,
+		JoystickConnected,
+		JoystickDisconnected,
+
+		//Touch
+		TouchBegan,
+		TouchMoved,
+		TouchEnded,
+		SensorChanged,
 	};
 
 	enum ControllerAxesType
@@ -67,7 +129,12 @@ namespace Input
 			type = _type;
 			key = _key;
 		}
-
+		ActionData(const ActionType& _type)
+		{
+			value = Digital;
+			type = _type;
+			key = -1;
+		}
 	};
 
 	class Action
@@ -75,7 +142,8 @@ namespace Input
 		string name;
 		multimap<TypeIndex, ActionData> allData;
 		function<void()> callback;
-		
+		/*bool isKeyHolding;
+		bool isButtonHolding;*/
 
 	private:
 		FORCEINLINE bool IsInAllData(const TypeIndex& _type, const int _key)
@@ -88,7 +156,16 @@ namespace Input
 			}
 			return false;
 		}
-
+		FORCEINLINE bool IsSpecificTypeInAllData(const TypeIndex& _type, const int _key, const ActionType& _specificType)
+		{
+			using Iterator = multimap<TypeIndex, ActionData>::iterator;
+			const pair <Iterator, Iterator>& _actionsType = allData.equal_range(_type);
+			for (Iterator it = _actionsType.first; it != _actionsType.second; ++it)
+			{
+				if (it->second.key == _key && it->second.type == _specificType) return true;
+			}
+			return false;
+		}
 	public:
 		FORCEINLINE string GetName() const
 		{
@@ -108,5 +185,7 @@ namespace Input
 
 	private:
 		TypeIndex ComputeTypeIndexByActionType(const ActionType& _typeIndex);
+	
+	
 	};
 }
