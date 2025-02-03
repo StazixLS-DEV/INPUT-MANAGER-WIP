@@ -72,9 +72,9 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 	});
 }
 
-type_index Input::Action::ComputeTypeIndexByActionType(const ActionType& _actionType)
+Input::TypeIndex Input::Action::ComputeTypeIndexByActionType(const ActionType& _actionType)
 {
-	const vector<function<type_index()>>& _actionsTypes =
+	const vector<function<TypeIndex()>>& _actionsTypes =
 	{
 		[&]() { return typeid(KeyPressed); },
 		[&]() { return typeid(KeyPressed); },

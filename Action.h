@@ -107,6 +107,6 @@ namespace Input
 		void TryToExecute(const EventInfo& _event);
 
 	private:
-		TypeIndex ComputeTypeIndexByActionType(const ActionType& _actionType);
+		TypeIndex ComputeTypeIndexByActionType(const ActionType& _typeIndex);
 	};
 }
