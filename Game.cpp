@@ -21,12 +21,12 @@ void Game::Start()
     //M_CAMERA.CreateCamera(Vector2f(), Vector2f(300.0f, 300.0f), "DefaultCamera");
     M_ACTOR.BeginPlay();
     ActionMap* _actionMap = M_INPUT.CreateActionMap("Demo");
-    Action* _action = new Action("Test", ActionData(KeyPressed, CAST(int, Key::A)), [&]() { LOG(Display, "coucou"); });
-    Action* _action2 = new Action("Test2", ActionData(KeyReleased, CAST(int, Key::A)), [&]() { LOG(Warning, "coucou"); });
-    Action* _action3 = new Action("Test3", ActionData(KeyHold, CAST(int, Key::A)), [&]() { LOG(Error, "coucou"); });
-    Action* _action4 = new Action("Test4", ActionData(KeyPressed, CAST(int, Key::B)), [&]() { LOG(Display, "salut"); });
-    Action* _action5 = new Action("Test5", ActionData(KeyReleased, CAST(int, Key::B)), [&]() { LOG(Warning, "salut"); });
-    Action* _action6 = new Action("Test6", ActionData(KeyHold, CAST(int, Key::B)), [&]() { LOG(Error, "salut"); });
+    Action* _action = new Action("Test", ActionData(KeyPressed, Key::A), [&]() { LOG(Display, "coucou"); });
+    Action* _action2 = new Action("Test2", ActionData(KeyReleased, Key::A), [&]() { LOG(Warning, "coucou"); });
+    Action* _action3 = new Action("Test3", ActionData(KeyHold, Key::A), [&]() { LOG(Error, "coucou"); });
+    Action* _action4 = new Action("Test4", ActionData(KeyPressed, Key::B), [&]() { LOG(Display, "salut"); });
+    Action* _action5 = new Action("Test5", ActionData(KeyReleased, Key::B), [&]() { LOG(Warning, "salut"); });
+    Action* _action6 = new Action("Test6", ActionData(KeyHold, Key::B), [&]() { LOG(Error, "salut"); });
     _actionMap->AddAction(_action);
     _actionMap->AddAction(_action2);
     _actionMap->AddAction(_action3);

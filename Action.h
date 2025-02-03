@@ -123,11 +123,12 @@ namespace Input
 		ActionType type;
 		int key;
 
-		ActionData(const ActionType& _type, const int _key)
+		template<typename EnumType, typename = enable_if_t<is_enum_v<EnumType>>>
+		ActionData(const ActionType& _type, const EnumType& _key)
 		{
 			value = Digital;
 			type = _type;
-			key = _key;
+			key = CAST(int, _key);
 		}
 		ActionData(const ActionType& _type)
 		{
