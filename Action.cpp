@@ -76,8 +76,12 @@ Input::TypeIndex Input::Action::ComputeTypeIndexByActionType(const ActionType& _
 {
 	const vector<function<TypeIndex()>>& _actionsTypes =
 	{
-		[&]() { return typeid(KeyPressed); },
-		[&]() { return typeid(KeyPressed); },
+		[&]() { return CAST(type_index, typeid(KeyPressed)); },
+		[&]() { return CAST(type_index,typeid(KeyPressed)); },
+		[&]() { return CAST(type_index,typeid(KeyReleased)); },
+		[&]() { return CAST(type_index, typeid(MouseButtonPressed)); },
+		[&]() { return CAST(type_index,typeid(MouseButtonPressed)); },
+		[&]() { return CAST(type_index,typeid(MouseButtonReleased)); },
 	};
 
 	return _actionsTypes[_actionType]();
