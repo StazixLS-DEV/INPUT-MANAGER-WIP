@@ -36,37 +36,7 @@ void Game::Start()
     //TODO y'a un bug qui fait que si on appuie sur une touche 
     // pendant pendant un hold ca fait le hold de la deuxieme
     // avant le pressed
-    window.handleEvents(
-        [&](const auto& _event)
-        {
-            if (is_same_v<decay_t<decltype(_event)>, ClosedWindow>)
 
-            {
-                window.close();
-                return;
-            }
-            M_INPUT.UpdateActionMaps(_event);
-            const bool _isKeyHolding = M_INPUT.GetIsKeyHolding();
-            const bool _isButtonHolding = M_INPUT.GetIsButtonHolding();
-          
-            if (is_same_v<decay_t<decltype(_event)>, PressedKey> && !_isKeyHolding)
-            {
-                M_INPUT.SetIsKeyHolding(true);
-            }
-            else if (is_same_v<decay_t<decltype(_event)>, ReleasedKey> && _isKeyHolding)
-            {
-                M_INPUT.SetIsKeyHolding(false);
-            }
-            if (is_same_v<decay_t<decltype(_event)>, PressedMouseButton> && !_isButtonHolding)
-            {
-                M_INPUT.SetIsButtonHolding(true);
-            }
-            else if (is_same_v<decay_t<decltype(_event)>, ReleasedMouseButton> && _isButtonHolding)
-            {
-                M_INPUT.SetIsButtonHolding(false);
-            }
-        }
-    );
     _actionMap->Enable();
 };
 
