@@ -24,6 +24,14 @@ namespace Input
 		{
 			return isButtonHolding;
 		}
+		FORCEINLINE void SetIsButtonHolding(const bool _isButtonHolding)
+		{
+			isButtonHolding = _isButtonHolding;
+		}
+		FORCEINLINE bool SetIsKeyHolding(const bool _isKeyHolding)
+		{
+			isKeyHolding = _isKeyHolding;
+		}
 		FORCEINLINE ActionMap* GetActionMapByName(const string& _name)
 		{
 			if (!actionsMaps.contains(_name)) return nullptr;
@@ -41,9 +49,9 @@ namespace Input
 		~InputManager();
 
 	private:
-		void UpdateActionMaps(const EventInfo& _event);
 
 	public:
 		void Update(RenderWindow& _window);
+		void UpdateActionMaps(const EventInfo& _event);
 	};
 }
