@@ -44,9 +44,34 @@ namespace Input
 	
 #pragma endregion
 
-	
+	union CallBackType
+	{
+		function<void()> digitalCallback; // bool
+		function<void(const float& _axis)>	axisCallback;	 // float
+		function<void(const Vector2f& _axis2)>	axis2Callback;
+		CallBackType()
+		{
 
-	enum ControllerButtonsType
+		}
+		CallBackType(const function<void()>& _digitalCallback)
+		{
+			digitalCallback = _digitalCallback;
+		}
+		CallBackType(const function<void(const float& _axis)>& _axisCallback)
+		{
+			axisCallback = _axisCallback;
+		}
+		CallBackType(const function<void(const Vector2f& _axis2)>& _axis2Callback)
+		{
+			axis2Callback = _axis2Callback;
+		}
+		~CallBackType()
+		{
+
+		}
+	};
+
+	enum class ControllerButtonsType
 	{
 		Start,
 		Select,
@@ -130,21 +155,54 @@ namespace Input
 		template<typename EnumType, typename = enable_if_t<is_enum_v<EnumType>>>
 		ActionData(const ActionType& _type, const EnumType& _key)
 		{
-			value = Digital;
+			assert((_type != JoystickPressed && _type != JoystickReleased && 
+				_type != Closed && _type != MouseEntered && _type != MouseLeft &&
+				_type != FocusLost && _type != FocusGained) &&
+				"Invalid constructor to use this ActionType!");
+
+			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
 			key = CAST(int, _key);
 		}
-		ActionData(const ActionType& _type, const int _joystickID)
+		ActionData(const ActionType& _type, const int _button)
 		{
-			value = Digital;
+			assert((_type == JoystickPressed || _type == JoystickReleased) &&
+				"Invalid constructor to use this ActionType!");
+
+			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
-			key = _joystickID;
+			key = _button;
 		}
 		ActionData(const ActionType& _type)
 		{
+			assert((_type == Closed || _type == MouseEntered || _type == MouseLeft ||
+				_type == FocusLost || _type == FocusGained) &&
+				"Invalid constructor to use this ActionType!");
+
 			value = Digital;
 			type = _type;
 			key = -1;
+		}
+
+		ValueType ComputeValueTypeWithActionType(const ActionType& _type)
+		{
+			switch (_type)
+			{
+			case MouseMoved:
+			case MouseMovedRaw:
+			case Resized:
+			case JoystickMoved:
+			case TouchBegan:
+			case TouchMoved:
+			case TouchEnded:
+				return Axis2;
+			case MouseWheelScrolled:
+			case SensorChanged:
+				return Axis;
+			default:
+				break;
+			}
+			return Digital;
 		}
 	};
 
@@ -152,7 +210,7 @@ namespace Input
 	{
 		string name;
 		multimap<TypeIndex, ActionData> allData;
-		function<void()> callback;
+		shared_ptr<CallBackType> callback;
 		/*bool isKeyHolding;
 		bool isButtonHolding;*/
 
@@ -177,6 +235,19 @@ namespace Input
 			}
 			return false;
 		}
+		void SimpleConstruct(const string& _name, const ActionData& _data)
+		{
+			name = _name;
+			AddData(_data);
+		}
+		void MultipleConstruct(const string& _name, const set<ActionData>& _allData)
+		{
+			name = _name;
+			for (const ActionData& _actionData : _allData)
+			{
+				AddData(_actionData);
+			}
+		}
 	public:
 		FORCEINLINE string GetName() const
 		{
@@ -193,14 +264,52 @@ namespace Input
 		}*/
 
 	public:
-		Action(const string& _name, const ActionData& _data, const function<void()>& _callback);
-		Action(const string& _name, const set<ActionData>& _allData, const function<void()>& _callback);
+		template <typename Type, enable_if_t<is_same_v<Type, float> || is_same_v<Type, Vector2f>>>
+		Action(const string& _name, const ActionData& _data, const function<void(const Type& _parameter)>& _callback)
+		{
+			assert((_data.value == Axis && is_same_v<Type, float>
+				|| _data.value == Axis2 && is_same_v<Type, Vector2f>) &&
+				"The callback must be a function with compatible parameter like ValueType return !");
+			SimpleConstruct(_name, _data);
+			callback = make_shared<CallBackType>(_callback);
+		}
+		Action(const string& _name, const ActionData& _data, const function<void()>& _callback)
+		{
+			assert((_data.value == Axis || _data.value == Axis2) &&
+				"The callback must be a function with compatible parameter like ValueType return !");
+			
+			SimpleConstruct(_name, _data);
+			callback = make_shared<CallBackType>(_callback);
+		}
+		Action(const string& _name, const set<ActionData>& _allData, const function<void()>& _callback)
+		{
+			if (_allData.empty()) return;
 
+			assert((_allData.begin()->value == Axis && _allData.begin()->value == Axis2) &&
+				"The callback must be a function with compatible parameter like ValueType return !");
+
+			MultipleConstruct(_name, _allData);
+			callback = make_shared<CallBackType>(_callback);
+		}
+		template <typename Type, enable_if_t<is_same_v<Type, float> || is_same_v<Type, Vector2f>>>
+		Action(const string& _name, const set<ActionData>& _allData, const function<void(const Type& _parameter)>& _callback)
+		{
+			if (_allData.empty()) return;
+
+			assert((_allData.begin()->value == Axis && is_same_v<Type, float>
+					|| _allData.begin()->value == Axis2 && is_same_v<Type, Vector2f>) &&
+				"The callback must be a function with compatible parameter like ValueType return !");
+
+			MultipleConstruct(_name, _allData);
+			callback = _callback;
+		}
+
+	public:
 		void TryToExecute(const EventInfo& _event);
 
 	private:
 		TypeIndex ComputeTypeIndexByActionType(const ActionType& _typeIndex);
-	
+		
 	
 	};
 }

@@ -40,7 +40,7 @@ void Input::ActionMap::RemoveAction(const string& _name)
 {
 	if (!actions.contains(_name)) return;
 
-	delete actions[_name];
+	delete actions.at(_name);
 	actions.erase(_name);
 }
 
