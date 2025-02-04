@@ -4,6 +4,7 @@
 #include "CameraManager.h"
 #include "TimerManager.h"
 
+#include <thread>
 using namespace Input;
 using namespace Camera;
 
@@ -16,6 +17,9 @@ Game::Game()
 void Game::Start()
 {
     window.create(VideoMode({ 800, 400 }), "Angry Birds");
+
+    thread _threadTest = thread([&](RenderWindow& _window) {M_INPUT.UpdateTest(window); });
+
 
     M_CAMERA.CreateCamera("DefaultCamera"); 
     //M_CAMERA.CreateCamera(Vector2f(), Vector2f(300.0f, 300.0f), "DefaultCamera");
@@ -41,7 +45,7 @@ void Game::Start()
 
 bool Game::Update()
 {
-    M_INPUT.Update(window);
+    //M_INPUT.Update(window);
     TM_Seconds& _timer = M_TIMER;
     _timer.Update();
     const float _deltaTime = _timer.GetDeltaTime().asSeconds();

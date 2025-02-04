@@ -53,3 +53,33 @@ void Input::InputManager::Update(RenderWindow& _window)
         }
     }
 }
+
+void Input::InputManager::UpdateTest(RenderWindow& _window)
+{
+    while (const EventInfo& _event = _window.pollEvent())
+    {
+        if (_event->is<Event::Closed>())
+        {
+            _window.close();
+            return;
+        }
+
+        UpdateActionMaps(_event);
+        if (_event->is<PressedKey>() && !isKeyHolding)
+        {
+            isKeyHolding = true;
+        }
+        else if (_event->is<ReleasedKey>() && isKeyHolding)
+        {
+            isKeyHolding = false;
+        }
+        if (_event->is<PressedMouseButton>() && !isButtonHolding)
+        {
+            isButtonHolding = true;
+        }
+        else if (_event->is<ReleasedMouseButton>() && isButtonHolding)
+        {
+            isButtonHolding = false;
+        }
+    }
+}

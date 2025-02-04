@@ -45,5 +45,6 @@ namespace Input
 
 	public:
 		void Update(RenderWindow& _window);
+		void UpdateTest(RenderWindow& _window);
 	};
 }

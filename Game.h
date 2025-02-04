@@ -5,7 +5,6 @@ class Game
 {
 protected:
 	RenderWindow window;
-
 public:
 	FORCEINLINE virtual bool IsOver() const
 	{
