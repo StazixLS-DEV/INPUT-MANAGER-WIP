@@ -16,8 +16,9 @@ Input::ActionMap::~ActionMap()
 }
 
 
-void Input::ActionMap::AddAction(Action* _action)
+void Input::ActionMap::AddAction(const string& _name, const ActionData& _data, const function<void()>& _callback)
 {
+	Action* _action = new Action(_name, _data, _callback);
 	actions.insert({ _action->GetName(), _action });
 }
 
@@ -25,7 +26,7 @@ void Input::ActionMap::AddActions(const vector<Action*>& _actions)
 {
 	for (Action* _action : _actions)
 	{
-		AddAction(_action);
+		actions.insert({ _action->GetName(), _action });
 	}
 }
 

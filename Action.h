@@ -36,7 +36,7 @@ namespace Input
 	using ControllerJoystickConnected = Event::JoystickConnected;
 	using ControllerJoystickDisconnected = Event::JoystickDisconnected;
 
-	//Touch
+	//Screen
 	using BeganTouch = Event::TouchBegan;
 	using MovedTouch = Event::TouchMoved;
 	using EndedTouch = Event::TouchEnded;
@@ -94,7 +94,7 @@ namespace Input
 		JoystickConnected,
 		JoystickDisconnected,
 
-		//Touch
+		//Screen
 		TouchBegan,
 		TouchMoved,
 		TouchEnded,
@@ -133,6 +133,12 @@ namespace Input
 			value = Digital;
 			type = _type;
 			key = CAST(int, _key);
+		}
+		ActionData(const ActionType& _type, const int _joystickID)
+		{
+			value = Digital;
+			type = _type;
+			key = _joystickID;
 		}
 		ActionData(const ActionType& _type)
 		{

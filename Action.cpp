@@ -140,11 +140,17 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 #pragma region Controler
 			else if (const ControllerJoystickPressed* _key = _event->getIf<ControllerJoystickPressed>())
 			{
-				callback();
+				if (IsInAllData(_elementType, _key->button))
+				{
+					callback();
+				}
 			}
 			else if (const ControllerJoystickReleased* _key = _event->getIf<ControllerJoystickReleased>())
 			{
-				callback();
+				if (IsInAllData(_elementType, _key->button))
+				{
+					callback();
+				}
 			}
 			else if (const ControllerJoystickMoved* _key = _event->getIf<ControllerJoystickMoved>())
 			{
@@ -160,7 +166,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 			}
 #pragma endregion
 
-#pragma region Touch
+#pragma region Screen
 			else if (const BeganTouch* _key = _event->getIf<BeganTouch>())
 			{
 				callback();
@@ -235,7 +241,7 @@ Input::TypeIndex Input::Action::ComputeTypeIndexByActionType(const ActionType& _
 		[&]() { return type_index(typeid(ControllerJoystickConnected)); },		//JoystickConnected
 		[&]() { return type_index(typeid(ControllerJoystickDisconnected)); },	//JoystickDisconnected
 
-		//Touch
+		//Screen
 		[&]() { return type_index(typeid(BeganTouch)); },						//TouchBegan
 		[&]() { return type_index(typeid(MovedTouch)); },						//TouchMoved
 		[&]() { return type_index(typeid(EndedTouch)); },						//TouchEnded

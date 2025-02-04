@@ -13,6 +13,12 @@ namespace Input
 	private:
 		FORCEINLINE void AddActionMap(const pair<string, ActionMap*>& _actionMap)
 		{
+			if (actionsMaps.contains(_actionMap.first))
+			{
+				delete _actionMap.second;
+				return;
+			}
+
 			actionsMaps.insert(_actionMap);
 		}
 	public:

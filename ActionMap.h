@@ -24,7 +24,8 @@ namespace Input
 		ActionMap(const string& _name = "DefaultActionMap");
 		~ActionMap();
 
-		void AddAction(Action* _action);
+	public:
+		void AddAction(const string& _name, const ActionData& _data, const function<void()>& _callback);
 		void AddActions(const vector<Action*>& _actions);
 		void Update(const EventInfo& _event);
 	};
