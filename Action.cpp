@@ -4,7 +4,7 @@
 Input::Action::Action(const string& _name, const ActionData& _data, const function<void()>& _callback)
 {
 	name = _name;
-	allData.insert({ ComputeTypeIndexByActionType(_data.type), _data });
+	AddData(_data);
 	callback = _callback;
 }
 
@@ -13,7 +13,7 @@ Input::Action::Action(const string& _name, const set<ActionData>& _allData, cons
 	name = _name;
 	for (const ActionData& _actionData : _allData)
 	{
-		allData.insert({ ComputeTypeIndexByActionType(_actionData.type), _actionData });
+		AddData(_actionData);
 	}
 	callback = _callback;
 }
@@ -49,16 +49,17 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				}
 			}
 
-			else if (const ReleasedKey* _key = _event->getIf<ReleasedKey>())
+			if (const ReleasedKey* _key = _event->getIf<ReleasedKey>())
 			{
 				if (IsInAllData(_elementType, CAST(const int, _key->code)))
 				{
 					callback();
 				}
 			}
-
+			
 			
 #pragma endregion
+
 #pragma region Mouse
 #pragma region Button
 

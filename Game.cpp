@@ -33,7 +33,6 @@ void Game::Start()
     _actionMap->AddAction(_action4);
     _actionMap->AddAction(_action5);
     _actionMap->AddAction(_action6);
-
     //TODO y'a un bug qui fait que si on appuie sur une touche 
     // pendant pendant un hold ca fait le hold de la deuxieme
     // avant le pressed

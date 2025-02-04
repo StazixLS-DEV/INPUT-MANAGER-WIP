@@ -101,6 +101,10 @@ namespace Input
 		SensorChanged,
 	};
 
+		//chaque inputaction possède des callback start / performed / released
+		//elles sont appellé quand c'est l'input associé
+		//on peut accèder à tout moment à la valeur de l'inputaction
+
 	enum ControllerAxesType
 	{
 		LeftStickX,
@@ -171,6 +175,10 @@ namespace Input
 		FORCEINLINE string GetName() const
 		{
 			return name;
+		}
+		FORCEINLINE void AddData(const ActionData& _actionData)
+		{
+			allData.insert({ ComputeTypeIndexByActionType(_actionData.type), _actionData });
 		}
 		/*template <typename Type>
 		FORCEINLINE void SetTrigger()

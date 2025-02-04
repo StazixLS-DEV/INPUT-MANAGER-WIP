@@ -43,7 +43,7 @@ void Input::InputManager::Update(RenderWindow& _window)
         {
             isKeyHolding = false;
         }
-        else if (_event->is<PressedMouseButton>() && !isButtonHolding)
+        if (_event->is<PressedMouseButton>() && !isButtonHolding)
         {
             isButtonHolding = true;
         }
