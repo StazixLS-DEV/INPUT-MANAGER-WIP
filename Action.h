@@ -190,7 +190,26 @@ namespace Input
 		Action(const string& _name, const ActionData& _data, const function<void()>& _callback);
 		Action(const string& _name, const set<ActionData>& _allData, const function<void()>& _callback);
 
-		void TryToExecute(const EventInfo& _event);
+		template<typename Type>
+		Type TryToExecute(const EventInfo& _event)
+		{
+			if (!callback) return;
+
+			_event->visit([&](auto&& _element)
+			{
+				if (is_same_v<decay_t<decltype(_element) >>, Type > )
+				{
+					const type_index& _elementType = TYPE_ID(_element);
+					if (allData.contains(_elementType))
+					{
+						if (const Type* _key = _event->getIf<Type>())
+						{
+							_key.
+						}
+					}
+				}
+			});
+		}
 
 	private:
 		TypeIndex ComputeTypeIndexByActionType(const ActionType& _typeIndex);

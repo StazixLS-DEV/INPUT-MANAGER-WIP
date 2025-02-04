@@ -28,7 +28,7 @@ namespace Input
 		{
 			isButtonHolding = _isButtonHolding;
 		}
-		FORCEINLINE bool SetIsKeyHolding(const bool _isKeyHolding)
+		FORCEINLINE void SetIsKeyHolding(const bool _isKeyHolding)
 		{
 			isKeyHolding = _isKeyHolding;
 		}

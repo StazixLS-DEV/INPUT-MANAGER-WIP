@@ -37,9 +37,9 @@ void Game::Start()
     // pendant pendant un hold ca fait le hold de la deuxieme
     // avant le pressed
     window.handleEvents(
-        [&](const EventInfo& _event)
+        [&](const auto& _event)
         {
-            if (_event->is<Event::Closed>())
+            if (is_same_v<decay_t<decltype(_event)>, ClosedWindow>)
 
             {
                 window.close();
@@ -49,19 +49,19 @@ void Game::Start()
             const bool _isKeyHolding = M_INPUT.GetIsKeyHolding();
             const bool _isButtonHolding = M_INPUT.GetIsButtonHolding();
           
-            if (_event->is<PressedKey>() && !_isKeyHolding)
+            if (is_same_v<decay_t<decltype(_event)>, PressedKey> && !_isKeyHolding)
             {
                 M_INPUT.SetIsKeyHolding(true);
             }
-            else if (_event->is<ReleasedKey>() && _isKeyHolding)
+            else if (is_same_v<decay_t<decltype(_event)>, ReleasedKey> && _isKeyHolding)
             {
                 M_INPUT.SetIsKeyHolding(false);
             }
-            if (_event->is<PressedMouseButton>() && !_isButtonHolding)
+            if (is_same_v<decay_t<decltype(_event)>, PressedMouseButton> && !_isButtonHolding)
             {
                 M_INPUT.SetIsButtonHolding(true);
             }
-            else if (_event->is<ReleasedMouseButton>() && _isButtonHolding)
+            else if (is_same_v<decay_t<decltype(_event)>, ReleasedMouseButton> && _isButtonHolding)
             {
                 M_INPUT.SetIsButtonHolding(false);
             }
