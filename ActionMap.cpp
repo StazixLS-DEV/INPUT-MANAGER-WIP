@@ -18,6 +18,12 @@ Input::ActionMap::~ActionMap()
 
 void Input::ActionMap::AddAction(const string& _name, const ActionData& _data, const function<void()>& _callback)
 {
+	if (actions.contains(_name))
+	{
+		LOG(Error, "This Action's name (" + _name + ") already used in this ActionMap ("+ name + ") !");
+		return;
+	}
+
 	Action* _action = new Action(_name, _data, _callback);
 	actions.insert({ _action->GetName(), _action });
 }
@@ -28,6 +34,14 @@ void Input::ActionMap::AddActions(const vector<Action*>& _actions)
 	{
 		actions.insert({ _action->GetName(), _action });
 	}
+}
+
+void Input::ActionMap::RemoveAction(const string& _name)
+{
+	if (!actions.contains(_name)) return;
+
+	delete actions[_name];
+	actions.erase(_name);
 }
 
 void Input::ActionMap::Update(const EventInfo& _event)

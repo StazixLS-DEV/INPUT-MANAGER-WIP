@@ -4,6 +4,26 @@
 
 namespace Input
 {
+	/*template <typename ValueType>
+	struct InputAction
+	{
+		vector<function<ValueType()>> started;
+		vector<function<ValueType()>> performed;
+		vector<function<ValueType()>> cancel;
+
+		void BindPerformed(const function<ValueType()>& _callback)
+		{
+			performed.push_back(_callback);
+		}
+		ValueType OnPerformed()
+		{
+			for (const function<ValueType()>& _callback : performed)
+			{
+				return _callback();
+			}
+		}
+	};*/
+
 	class InputManager : public Singleton<InputManager>
 	{
 		map<string, ActionMap*> actionsMaps;
@@ -13,12 +33,6 @@ namespace Input
 	private:
 		FORCEINLINE void AddActionMap(const pair<string, ActionMap*>& _actionMap)
 		{
-			if (actionsMaps.contains(_actionMap.first))
-			{
-				delete _actionMap.second;
-				return;
-			}
-
 			actionsMaps.insert(_actionMap);
 		}
 	public:
@@ -35,8 +49,21 @@ namespace Input
 			if (!actionsMaps.contains(_name)) return nullptr;
 			return actionsMaps.at(_name);
 		}
+		FORCEINLINE void RemoveActionMap(const string& _name)
+		{
+			if (!actionsMaps.contains(_name)) return;
+
+			delete actionsMaps[_name];
+			actionsMaps.erase(_name);
+		}
 		FORCEINLINE ActionMap* CreateActionMap(const string& _name)
 		{
+			if (actionsMaps.contains(_name))
+			{
+				LOG(Error, "This ActionMap's name (" + _name + ") already used !");
+				return nullptr;
+			}
+
 			ActionMap* _actionMap = new ActionMap(_name);
 			AddActionMap({ _name, _actionMap });
 			return _actionMap;

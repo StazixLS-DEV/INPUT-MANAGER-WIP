@@ -27,6 +27,7 @@ namespace Input
 	public:
 		void AddAction(const string& _name, const ActionData& _data, const function<void()>& _callback);
 		void AddActions(const vector<Action*>& _actions);
+		void RemoveAction(const string& _name);
 		void Update(const EventInfo& _event);
 	};
 }
