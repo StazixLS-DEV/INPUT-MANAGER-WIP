@@ -165,7 +165,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				}
 				else if (const ChangedSensor* _key = _event->getIf<ChangedSensor>())
 				{
-					if (IsInAllData(_elementType,  _key->type))
+					if (IsInAllData(_elementType, _key->type))
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
