@@ -20,13 +20,13 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 					CAST(const int, _key->code), KeyHold) && 
 					_isKeyHolding)
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 				else if (IsSpecificTypeInAllData(_elementType,
 					CAST(const int, _key->code), KeyPressed) &&
 					!_isKeyHolding)
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 			}
 
@@ -34,7 +34,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 			{
 				if (IsInAllData(_elementType, CAST(const int, _key->code)))
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 			}
 			
@@ -51,13 +51,13 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 					CAST(const int, _key->button), MouseButtonHold) &&
 					_isButtonHolding)
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 				else if (IsSpecificTypeInAllData(_elementType,
 					CAST(const int, _key->button), MouseButtonPressed) &&
 					!_isButtonHolding)
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 			}
 
@@ -65,7 +65,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 			{
 				if (IsInAllData(_elementType, CAST(const int, _key->button)))
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 			}
 #pragma endregion
@@ -75,47 +75,47 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 			{
 				if (IsInAllData(_elementType, CAST(const int, _key->wheel)))
 				{
-					callback.get()->axisCallback(_key->delta);
+					(*callback.get()->axisCallback.get())(_key->delta);
 				}
 			}
 			else if (const MovedMouse* _key = _event->getIf<MovedMouse>())
 			{
-				callback.get()->axis2Callback(CAST(Vector2f, _key->position));
+				(*callback.get()->axis2Callback.get())(CAST(Vector2f, _key->position));
 			}
 			else if (const MovedRawMouse* _key = _event->getIf<MovedRawMouse>())
 			{
-				callback.get()->axis2Callback(CAST(Vector2f, _key->delta));
+				(*callback.get()->axis2Callback.get())(CAST(Vector2f, _key->delta));
 			}
 			else if (_event->is<EnteredMouse>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 			else if (_event->is<LeftMouse>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 #pragma endregion
 
 #pragma region Window
 			else if (const ResizedWindow* _key = _event->getIf<ResizedWindow>())
 			{
-				callback.get()->axis2Callback(CAST(Vector2f, _key->size));
+				(*callback.get()->axis2Callback.get())(CAST(Vector2f, _key->size));
 			}
 			else if (_event->is<LostFocus>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 			else if (_event->is<GainedFocus>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 			else if (const EnteredText* _key = _event->getIf<EnteredText>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 			else if (const ClosedWindow* _key = _event->getIf<ClosedWindow>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 #pragma endregion
 
@@ -124,14 +124,14 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 			{
 				if (IsInAllData(_elementType, _key->button))
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 			}
 			else if (const ControllerJoystickReleased* _key = _event->getIf<ControllerJoystickReleased>())
 			{
 				if (IsInAllData(_elementType, _key->button))
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 			}
 			else if (const ControllerJoystickMoved* _key = _event->getIf<ControllerJoystickMoved>())
@@ -142,32 +142,32 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 			}
 			else if (const ControllerJoystickConnected* _key = _event->getIf<ControllerJoystickConnected>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 			else if (const ControllerJoystickDisconnected* _key = _event->getIf<ControllerJoystickDisconnected>())
 			{
-				callback.get()->digitalCallback();
+				(*callback.get()->digitalCallback.get())();
 			}
 #pragma endregion
 
 #pragma region Screen
 			else if (const BeganTouch* _key = _event->getIf<BeganTouch>())
 			{
-				callback.get()->axis2Callback(CAST(Vector2f, _key->position));
+				(*callback.get()->axis2Callback.get())(CAST(Vector2f, _key->position));
 			}
 			else if (const MovedTouch* _key = _event->getIf<MovedTouch>())
 			{
-				callback.get()->axis2Callback(CAST(Vector2f, _key->position));
+				(*callback.get()->axis2Callback.get())(CAST(Vector2f, _key->position));
 			}
 			else if (const EndedTouch* _key = _event->getIf<EndedTouch>())
 			{
-				callback.get()->axis2Callback(CAST(Vector2f, _key->position));
+				(*callback.get()->axis2Callback.get())(CAST(Vector2f, _key->position));
 			}
 			else if (const ChangedSensor* _key = _event->getIf<ChangedSensor>())
 			{
 				if (IsInAllData(_elementType, CAST(int, _key->type)))
 				{
-					callback.get()->digitalCallback();
+					(*callback.get()->digitalCallback.get())();
 				}
 			}
 #pragma endregion

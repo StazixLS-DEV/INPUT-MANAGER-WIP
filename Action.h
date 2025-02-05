@@ -44,26 +44,26 @@ namespace Input
 	
 #pragma endregion
 
-	union CallBackType
+	struct CallBackType
 	{
-		function<void()> digitalCallback; // bool
-		function<void(const float& _axis)>	axisCallback;	 // float
-		function<void(const Vector2f& _axis2)>	axis2Callback;
+		unique_ptr<function<void()>> digitalCallback; // bool
+		unique_ptr<function<void(const float& _axis)>>	axisCallback;	 // float
+		unique_ptr<function<void(const Vector2f& _axis2)>>	axis2Callback;
 		CallBackType()
 		{
 
 		}
 		CallBackType(const function<void()>& _digitalCallback)
 		{
-			digitalCallback = _digitalCallback;
+			digitalCallback = make_unique<function<void()>>(_digitalCallback);
 		}
 		CallBackType(const function<void(const float& _axis)>& _axisCallback)
 		{
-			axisCallback = _axisCallback;
+			axisCallback = make_unique<function<void(const float& _axis)>>(_axisCallback);
 		}
 		CallBackType(const function<void(const Vector2f& _axis2)>& _axis2Callback)
 		{
-			axis2Callback = _axis2Callback;
+			axis2Callback = make_unique<function<void(const Vector2f& _axis2)>>(_axis2Callback);
 		}
 		~CallBackType()
 		{
@@ -275,7 +275,7 @@ namespace Input
 		}
 		Action(const string& _name, const ActionData& _data, const function<void()>& _callback)
 		{
-			assert((_data.value == Axis || _data.value == Axis2) &&
+			assert((_data.value != Axis || _data.value != Axis2) &&
 				"The callback must be a function with compatible parameter like ValueType return !");
 			
 			SimpleConstruct(_name, _data);
