@@ -321,73 +321,55 @@ namespace Input
 
 	public:
 		/// <summary>
-		/// Constructeur d'action dont la ValueType est Axis ou Axis2 !
+		/// Constructeur d'action dont la ValueType est Axis2 !
 		/// </summary>
-		/// <typeparam name="Type">float ou Vector2f selon la ValueType de l'ActionType correspondante</typeparam>
-		/// <typeparam name=""></typeparam>
 		/// <param name="_name">nom de l'action</param>
-		/// <param name="_data">data de l'action</param>
+		/// <param name="_data">ActionData dont la ValueType est Axis2</param>
 		/// <param name="_callback"></param>
-		template <typename Type, enable_if_t<is_same_v<Type, float> || is_same_v<Type, Vector2f>>>
-		Action(const string& _name, const ActionData& _data, const function<void(const Type& _parameter)>& _callback)
-		{
-			assert((_data.value == Axis && is_same_v<Type, float>
-				|| _data.value == Axis2 && is_same_v<Type, Vector2f>) &&
-				"The callback must be a function with compatible parameter like ValueType return !");
-			SimpleConstruct(_name, _data);
-			callback = make_shared<CallBackType>(_callback);
-		}
+		Action(const string& _name, const ActionData& _data, const function<void(const Vector2f& _parameter)>& _callback);
+		
+
+		/// <summary>
+		/// Constructeur d'action dont la ValueType est Axis !
+		/// </summary>
+		/// <param name="_name">nom de l'action</param>
+		/// <param name="_data">ActionData dont la ValueType est Axis</param>
+		/// <param name="_callback"></param>
+		Action(const string& _name, const ActionData& _data, const function<void(const float _parameter)>& _callback);
+		
+
 		/// <summary>
 		/// Constructeur d'action dont la ValueType est Digital !
 		/// </summary>
 		/// <param name="_name">nom de l'action</param>
-		/// <param name="_data">data de l'action</param>
+		/// <param name="_data">ActionData dont la ValueType est Digital</param>
 		/// <param name="_callback"></param>
-		Action(const string& _name, const ActionData& _data, const function<void()>& _callback)
-		{
-			assert((_data.value == Axis || _data.value == Axis2) &&
-				"The callback must be a function with compatible parameter like ValueType return !");
-			
-			SimpleConstruct(_name, _data);
-			callback = make_shared<CallBackType>(_callback);
-		}
-		/// <summary>
-		/// Constructeur d'actions dont les ValueTypes sont Axis ou Axis2 !
-		/// </summary>
-		/// <typeparam name="Type">float ou Vector2f selon les ValueType des ActionTypes correspondantes</typeparam>
-		/// <typeparam name=""></typeparam>
-		/// <param name="_name">nom de l'action</param>
-		/// <param name="_data">data de l'action</param>
-		/// <param name="_callback"></param>
-		Action(const string& _name, const vector<ActionData>& _allData, const function<void()>& _callback)
-		{
-			if (_allData.empty()) return;
-
-			assert((_allData[0].value == Axis && _allData[0].value == Axis2) &&
-				"The callback must be a function with compatible parameter like ValueType return !");
-
-			MultipleConstruct(_name, _allData);
-			callback = make_shared<CallBackType>(_callback);
-		}
+		Action(const string& _name, const ActionData& _data, const function<void()>& _callback);
+		
 		/// <summary>
 		/// Constructeur d'actions dont les ValueTypes sont Digital !
 		/// </summary>
 		/// <param name="_name">nom de l'action</param>
-		/// <param name="_data">data de l'action</param>
+		/// <param name="_data">ActionData dont la ValueType est Digital</param>
 		/// <param name="_callback"></param>
-		template <typename Type, enable_if_t<is_same_v<Type, float> || is_same_v<Type, Vector2f>>>
-		Action(const string& _name, const vector<ActionData>& _allData, const function<void(const Type& _parameter)>& _callback)
-		{
-			if (_allData.empty()) return;
-
-			assert((_allData[0].value == Axis && is_same_v<Type, float>
-					|| _allData[0].value == Axis2 && is_same_v<Type, Vector2f>) &&
-				"The callback must be a function with compatible parameter like ValueType return !");
-
-			MultipleConstruct(_name, _allData);
-			callback = _callback;
-		}
-
+		Action(const string& _name, const vector<ActionData>& _allData, const function<void()>& _callback);
+		
+		/// <summary>
+		/// Constructeur d'actions dont les ValueTypes sont Axis2 !
+		/// </summary>
+		/// <param name="_name">nom de l'action</param>
+		/// <param name="_data">ActionData dont la ValueType est Axis2</param>
+		/// <param name="_callback"></param>
+		Action(const string& _name, const vector<ActionData>& _allData, const function<void(const Vector2f& _parameter)>& _callback);
+		
+		/// <summary>
+		/// Constructeur d'actions dont les ValueTypes sont Axis !
+		/// </summary>
+		/// <param name="_name">nom de l'action</param>
+		/// <param name="_data">ActionData dont la ValueType est Axis</param>
+		/// <param name="_callback"></param>
+		Action(const string& _name, const vector<ActionData>& _allData, const function<void(const float _parameter)>& _callback);
+		
 	public:
 		void TryToExecute(const EventInfo& _event);
 

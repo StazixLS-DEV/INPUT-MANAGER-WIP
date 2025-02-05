@@ -1,6 +1,58 @@
 #include "Action.h"
 #include "InputManager.h"
 
+Input::Action::Action(const string& _name, const ActionData& _data, const function<void(const Vector2f& _parameter)>& _callback)
+{
+	assert(_data.value == Axis2 &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+	SimpleConstruct(_name, _data);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const ActionData& _data, const function<void(const float _parameter)>& _callback)
+{
+	assert(_data.value == Axis &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+	SimpleConstruct(_name, _data);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const ActionData& _data, const function<void()>& _callback)
+{
+	assert(_data.value == Digital &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	SimpleConstruct(_name, _data);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const vector<ActionData>& _allData, const function<void()>& _callback)
+{
+	if (_allData.empty()) return;
+
+	assert(_allData[0].value == Digital &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	MultipleConstruct(_name, _allData);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const vector<ActionData>& _allData, const function<void(const Vector2f& _parameter)>& _callback)
+{
+	if (_allData.empty()) return;
+
+	assert(_allData[0].value == Axis2 &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	MultipleConstruct(_name, _allData);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const vector<ActionData>& _allData, const function<void(const float _parameter)>& _callback)
+{
+	if (_allData.empty()) return;
+
+	assert(_allData[0].value == Axis2 &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	MultipleConstruct(_name, _allData);
+	callback = make_shared<CallBackType>(_callback);
+}
 
 void Input::Action::TryToExecute(const EventInfo& _event)
 {
