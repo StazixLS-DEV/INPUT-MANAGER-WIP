@@ -31,8 +31,9 @@ void Game::Start()
     _actionMap->AddAction("Test7", ActionData(KeyPressed, Key::T), [&]() { LOG(Display, "Thomas"); });
     _actionMap->AddAction("Test8", ActionData(KeyReleased, Key::T), [&]() { LOG(Warning, "Thomas"); });
     _actionMap->AddAction("Test9", ActionData(KeyHold, Key::T), [&]() { LOG(Error, "Thomas"); });
-    _actionMap->AddAction("Test10", ActionData(MouseMoved), [&]() { LOG(Error, "MouseMoved"); });
-    _actionMap->AddAction("Test11", ActionData(MouseMovedRaw), [&]() { LOG(Error, "MouseMovedRaw"); });
+    _actionMap->AddAction("Test10", ActionData(MouseMoved), [&](const Vector2f& _position) { LOG(Error, "X: " + to_string(_position.x) + " Y: " + to_string(_position.y)); });
+    _actionMap->AddAction("Test11", ActionData(MouseMovedRaw), [&](const Vector2f& _position) { LOG(Error, "MouseMovedRaw"); });
+    _actionMap->AddAction("Test12", ActionData(MouseWheelScrolled, Mouse::Wheel::Vertical), [&](const float _position) { LOG(Error, to_string(_position)); });
     //TODO y'a un bug qui fait que si on appuie sur une touche 
     // pendant pendant un hold ca fait le hold de la deuxieme
     // avant le pressed
