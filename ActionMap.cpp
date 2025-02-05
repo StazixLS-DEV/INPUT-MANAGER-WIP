@@ -18,7 +18,7 @@ Input::ActionMap::~ActionMap()
 
 void Input::ActionMap::AddAction(const string& _name, const ActionData& _data, const function<void()>& _callback)
 {
-	assert((_data.value == Axis || _data.value == Axis2) &&
+	assert(_data.value == Digital &&
 		"The callback must be a function with compatible parameter like ValueType return !");
 
 	if (actions.contains(_name))

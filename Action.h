@@ -158,6 +158,7 @@ namespace Input
 		///	MouseButtonPressed /
 		///	MouseButtonHold /
 		///	MouseButtonReleased /
+		/// MouseWheelScrolled /
 		/// SensorChanged 
 		/// </summary>
 		/// <typeparam name="EnumType"></typeparam>
@@ -169,7 +170,7 @@ namespace Input
 		{
 			assert((_type == KeyPressed || _type == KeyHold ||
 				_type == KeyReleased || _type == MouseButtonPressed || _type == MouseButtonHold ||
-				_type == MouseButtonReleased || _type == SensorChanged) &&
+				_type == MouseButtonReleased || _type == SensorChanged || _type == MouseWheelScrolled) &&
 				"Invalid constructor to use this ActionType!");
 
 			value = ComputeValueTypeWithActionType(_type);
@@ -198,7 +199,6 @@ namespace Input
 		/// MouseEntered /
 		/// MouseLeft /
 		/// FocusLost /
-		/// MouseWheelScrolled /
 		/// JoystickMoved /
 		/// JoystickConnected /
 		///	JoystickDisconnected /
@@ -221,10 +221,10 @@ namespace Input
 			assert((_type != KeyPressed && _type != KeyHold &&
 				_type != KeyReleased && _type != MouseButtonPressed && _type != MouseButtonHold &&
 				_type != MouseButtonReleased && _type != SensorChanged &&
-				_type != JoystickButtonPressed && _type != JoystickButtonReleased) &&
+				_type != JoystickButtonPressed && _type != JoystickButtonReleased && _type != MouseWheelScrolled) &&
 				"Invalid constructor to use this ActionType!");
 
-			value = Digital;
+			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
 			key = -1;
 		}
