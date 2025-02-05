@@ -17,13 +17,13 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				{
 					const bool _isKeyHolding = /*isKeyHolding*/ M_INPUT.GetIsKeyHolding();
 					if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->code), KeyHold) &&
+						 _key->code, KeyHold) &&
 						_isKeyHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
 					else if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->code), KeyPressed) &&
+						 _key->code, KeyPressed) &&
 						!_isKeyHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
@@ -48,13 +48,13 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				{
 					const bool _isButtonHolding = /*isButtonHolding*/ M_INPUT.GetIsButtonHolding();
 					if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->button), MouseButtonHold) &&
+						 _key->button, MouseButtonHold) &&
 						_isButtonHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
 					else if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->button), MouseButtonPressed) &&
+						_key->button, MouseButtonPressed) &&
 						!_isButtonHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
@@ -73,7 +73,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				//TODO rajouter condition appel callback
 				else if (const ScrolledMouseWheel* _key = _event->getIf<ScrolledMouseWheel>())
 				{
-					if (IsInAllData(_elementType, CAST(const int, _key->wheel)))
+					if (IsInAllData(_elementType, _key->wheel))
 					{
 						(*callback.get()->axisCallback.get())(_key->delta);
 					}
@@ -165,7 +165,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				}
 				else if (const ChangedSensor* _key = _event->getIf<ChangedSensor>())
 				{
-					if (IsInAllData(_elementType, CAST(int, _key->type)))
+					if (IsInAllData(_elementType,  _key->type))
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
