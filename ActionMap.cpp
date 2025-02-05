@@ -18,6 +18,9 @@ Input::ActionMap::~ActionMap()
 
 void Input::ActionMap::AddAction(const string& _name, const ActionData& _data, const function<void()>& _callback)
 {
+	assert((_data.value == Axis || _data.value == Axis2) &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
 	if (actions.contains(_name))
 	{
 		LOG(Error, "This Action's name (" + _name + ") already used in this ActionMap ("+ name + ") !");
