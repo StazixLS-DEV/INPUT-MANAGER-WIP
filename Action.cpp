@@ -1,6 +1,58 @@
 #include "Action.h"
 #include "InputManager.h"
 
+Input::Action::Action(const string& _name, const ActionData& _data, const function<void(const Vector2f& _parameter)>& _callback)
+{
+	assert(_data.value == Axis2 &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+	SimpleConstruct(_name, _data);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const ActionData& _data, const function<void(const float _parameter)>& _callback)
+{
+	assert(_data.value == Axis &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+	SimpleConstruct(_name, _data);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const ActionData& _data, const function<void()>& _callback)
+{
+	assert(_data.value == Digital &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	SimpleConstruct(_name, _data);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const vector<ActionData>& _allData, const function<void()>& _callback)
+{
+	if (_allData.empty()) return;
+
+	assert(_allData[0].value == Digital &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	MultipleConstruct(_name, _allData);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const vector<ActionData>& _allData, const function<void(const Vector2f& _parameter)>& _callback)
+{
+	if (_allData.empty()) return;
+
+	assert(_allData[0].value == Axis2 &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	MultipleConstruct(_name, _allData);
+	callback = make_shared<CallBackType>(_callback);
+}
+Input::Action::Action(const string& _name, const vector<ActionData>& _allData, const function<void(const float _parameter)>& _callback)
+{
+	if (_allData.empty()) return;
+
+	assert(_allData[0].value == Axis2 &&
+		"The callback must be a function with compatible parameter like ValueType return !");
+
+	MultipleConstruct(_name, _allData);
+	callback = make_shared<CallBackType>(_callback);
+}
 
 void Input::Action::TryToExecute(const EventInfo& _event)
 {
@@ -17,13 +69,13 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				{
 					const bool _isKeyHolding = /*isKeyHolding*/ M_INPUT.GetIsKeyHolding();
 					if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->code), KeyHold) &&
+						 _key->code, KeyHold) &&
 						_isKeyHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
 					else if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->code), KeyPressed) &&
+						 _key->code, KeyPressed) &&
 						!_isKeyHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
@@ -48,13 +100,13 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				{
 					const bool _isButtonHolding = /*isButtonHolding*/ M_INPUT.GetIsButtonHolding();
 					if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->button), MouseButtonHold) &&
+						 _key->button, MouseButtonHold) &&
 						_isButtonHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
 					else if (IsSpecificTypeInAllData(_elementType,
-						CAST(const int, _key->button), MouseButtonPressed) &&
+						_key->button, MouseButtonPressed) &&
 						!_isButtonHolding)
 					{
 						(*callback.get()->digitalCallback.get())();
@@ -73,7 +125,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				//TODO rajouter condition appel callback
 				else if (const ScrolledMouseWheel* _key = _event->getIf<ScrolledMouseWheel>())
 				{
-					if (IsInAllData(_elementType, CAST(const int, _key->wheel)))
+					if (IsInAllData(_elementType, _key->wheel))
 					{
 						(*callback.get()->axisCallback.get())(_key->delta);
 					}
@@ -165,7 +217,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				}
 				else if (const ChangedSensor* _key = _event->getIf<ChangedSensor>())
 				{
-					if (IsInAllData(_elementType, CAST(int, _key->type)))
+					if (IsInAllData(_elementType, _key->type))
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
