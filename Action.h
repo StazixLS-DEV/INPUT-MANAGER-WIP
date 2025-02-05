@@ -262,8 +262,8 @@ namespace Input
 		string name;
 		multimap<TypeIndex, ActionData> allData;
 		shared_ptr<CallBackType> callback;
-		/*bool isKeyHolding;
-		bool isButtonHolding;*/
+		bool isKeyHolding;
+		bool isButtonHolding;
 
 	private:
 		template<typename EnumType, typename = enable_if_t<is_enum_v<EnumType>>>
@@ -310,6 +310,8 @@ namespace Input
 		{
 			name = _name;
 			AddData(_data);
+			isKeyHolding = false;
+			isButtonHolding = false;
 		}
 		void MultipleConstruct(const string& _name, const vector<ActionData>& _allData)
 		{
@@ -318,6 +320,8 @@ namespace Input
 			{
 				AddData(_actionData);
 			}
+			isKeyHolding = false;
+			isButtonHolding = false;
 		}
 
 	public:

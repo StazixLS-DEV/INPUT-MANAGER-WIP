@@ -4,25 +4,6 @@
 
 namespace Input
 {
-	/*template <typename ValueType>
-	struct InputAction
-	{
-		vector<function<ValueType()>> started;
-		vector<function<ValueType()>> performed;
-		vector<function<ValueType()>> cancel;
-
-		void BindPerformed(const function<ValueType()>& _callback)
-		{
-			performed.push_back(_callback);
-		}
-		ValueType OnPerformed()
-		{
-			for (const function<ValueType()>& _callback : performed)
-			{
-				return _callback();
-			}
-		}
-	};*/
 
 	class InputManager : public Singleton<InputManager>
 	{

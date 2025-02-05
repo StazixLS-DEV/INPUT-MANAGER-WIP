@@ -74,7 +74,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 					{
 						if (Keyboard::isKeyPressed(CAST(Key, _it->second.key)))
 						{
-							if ((_isKeyHolding && _it->second.type == KeyHold) ||
+							if (_it->second.type == KeyHold ||
 								(!_isKeyHolding && _it->second.type == KeyPressed))
 							{
 								(*callback.get()->digitalCallback.get())();
@@ -107,7 +107,7 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 					{
 						if (Mouse::isButtonPressed(CAST(Mouse::Button, _it->second.key)))
 						{
-							if ((_isButtonHolding && _it->second.type == MouseButtonHold) ||
+							if ( _it->second.type == MouseButtonHold ||
 								(!_isButtonHolding && _it->second.type == MouseButtonPressed))
 							{
 								(*callback.get()->digitalCallback.get())();
