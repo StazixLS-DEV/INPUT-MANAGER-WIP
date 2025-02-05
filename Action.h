@@ -262,7 +262,7 @@ namespace Input
 		template<typename EnumType, typename = enable_if_t<is_enum_v<EnumType>>>
 		FORCEINLINE bool IsInAllData(const TypeIndex& _type, const EnumType& _key)
 		{
-			return IsInAllData(_type, CAST(int, _key))
+			return IsInAllData(_type, CAST(int, _key));
 		}
 		FORCEINLINE bool IsInAllData(const TypeIndex& _type, const int _key)
 		{
