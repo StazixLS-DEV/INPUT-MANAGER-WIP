@@ -80,3 +80,15 @@ namespace Input
 		void Update(RenderWindow& _window);
 	};
 }
+
+#pragma region Exemple
+/*
+
+
+
+
+
+
+
+*/
+#pragma endregion
