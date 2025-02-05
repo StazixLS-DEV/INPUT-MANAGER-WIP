@@ -149,6 +149,7 @@ namespace Input
 		ValueType value;
 		ActionType type;
 		int key;
+		int JoystickId;
 
 		/// <summary>
 		/// Constructeur pour les ActionTypes :
@@ -176,22 +177,29 @@ namespace Input
 			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
 			key = CAST(int, _key);
+			JoystickId = -1;
 		}
 		/// <summary>
 		/// Constructeur pour les ActionTypes :
 		/// JoystickButtonPressed /
-		/// JoystickButtonReleased
+		/// JoystickButtonReleased /
+		/// JoystickMoved /
+		/// JoystickConnected /
+		///	JoystickDisconnected 
 		/// </summary>
 		/// <param name="_type"></param>
 		/// <param name="_button">Boutton de Joystick</param>
-		ActionData(const ActionType& _type, const int _button)
+		ActionData(const ActionType& _type, const int _joystick, const int _button = -1)
 		{
-			assert((_type == JoystickButtonPressed || _type == JoystickButtonReleased) &&
+			assert((_type == JoystickButtonPressed || _type == JoystickButtonReleased ||
+				_type == JoystickMoved || _type == JoystickConnected ||
+				_type == JoystickDisconnected) &&
 				"Invalid constructor to use this ActionType!");
 
 			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
 			key = _button;
+			JoystickId = _joystick;
 		}
 		/// <summary>
 		/// Constructeur pour les ActionTypes :
@@ -199,9 +207,6 @@ namespace Input
 		/// MouseEntered /
 		/// MouseLeft /
 		/// FocusLost /
-		/// JoystickMoved /
-		/// JoystickConnected /
-		///	JoystickDisconnected /
 		/// MouseMoved /
 		/// MouseMovedRaw /
 		///	MouseEntered /
@@ -221,7 +226,9 @@ namespace Input
 			assert((_type != KeyPressed && _type != KeyHold &&
 				_type != KeyReleased && _type != MouseButtonPressed && _type != MouseButtonHold &&
 				_type != MouseButtonReleased && _type != SensorChanged &&
-				_type != JoystickButtonPressed && _type != JoystickButtonReleased && _type != MouseWheelScrolled) &&
+				_type != JoystickButtonPressed && _type != JoystickButtonReleased &&
+				_type != JoystickMoved && _type != JoystickConnected &&
+				_type != JoystickDisconnected && _type != MouseWheelScrolled) &&
 				"Invalid constructor to use this ActionType!");
 
 			value = ComputeValueTypeWithActionType(_type);
@@ -268,13 +275,22 @@ namespace Input
 		{
 			using Iterator = multimap<TypeIndex, ActionData>::iterator;
 			const pair <Iterator, Iterator>& _actionsType = allData.equal_range(_type);
-			for (Iterator it = _actionsType.first; it != _actionsType.second; ++it)
+			for (Iterator _it = _actionsType.first; _it != _actionsType.second; ++_it)
 			{
-				if (it->second.key == _key) return true;
+				if (_it->second.key == _key) return true;
 			}
 			return false;
 		}
-
+		FORCEINLINE bool HasJoystickIDInAllData(const TypeIndex& _type, const int _key)
+		{
+			using Iterator = multimap<TypeIndex, ActionData>::iterator;
+			const pair <Iterator, Iterator>& _actionsType = allData.equal_range(_type);
+			for (Iterator _it = _actionsType.first; _it != _actionsType.second; ++_it)
+			{
+				if (_it->second.key == _key) return true;
+			}
+			return false;
+		}
 		template<typename EnumType, typename = enable_if_t<is_enum_v<EnumType>>>
 		FORCEINLINE bool IsSpecificTypeInAllData(const TypeIndex& _type, const EnumType& _key, const ActionType& _specificType)
 		{
@@ -284,9 +300,9 @@ namespace Input
 		{
 			using Iterator = multimap<TypeIndex, ActionData>::iterator;
 			const pair <Iterator, Iterator>& _actionsType = allData.equal_range(_type);
-			for (Iterator it = _actionsType.first; it != _actionsType.second; ++it)
+			for (Iterator _it = _actionsType.first; _it != _actionsType.second; ++_it)
 			{
-				if (it->second.key == _key && it->second.type == _specificType) return true;
+				if (_it->second.key == _key && _it->second.type == _specificType) return true;
 			}
 			return false;
 		}

@@ -65,20 +65,22 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 #pragma region Keyboard
 
 
-				if (const PressedKey* _key = _event->getIf<PressedKey>())
+				if (_event->is<PressedKey>())
 				{
 					const bool _isKeyHolding = /*isKeyHolding*/ M_INPUT.GetIsKeyHolding();
-					if (IsSpecificTypeInAllData(_elementType,
-						 _key->code, KeyHold) &&
-						_isKeyHolding)
+					using Iterator = multimap<TypeIndex, ActionData>::iterator;
+					const pair <Iterator, Iterator>& _actionsType = allData.equal_range(_elementType);
+					for (Iterator _it = _actionsType.first; _it != _actionsType.second; ++_it)
 					{
-						(*callback.get()->digitalCallback.get())();
-					}
-					else if (IsSpecificTypeInAllData(_elementType,
-						 _key->code, KeyPressed) &&
-						!_isKeyHolding)
-					{
-						(*callback.get()->digitalCallback.get())();
+						if (Keyboard::isKeyPressed(CAST(Key, _it->second.key)))
+						{
+							if ((_isKeyHolding && _it->second.type == KeyHold) ||
+								(!_isKeyHolding && _it->second.type == KeyPressed))
+							{
+								(*callback.get()->digitalCallback.get())();
+								break;
+							}
+						}
 					}
 				}
 
@@ -96,20 +98,22 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 #pragma region Mouse
 #pragma region Button
 
-				else if (const PressedMouseButton* _key = _event->getIf<PressedMouseButton>())
+				else if (_event->is<PressedMouseButton>())
 				{
-					const bool _isButtonHolding = /*isButtonHolding*/ M_INPUT.GetIsButtonHolding();
-					if (IsSpecificTypeInAllData(_elementType,
-						 _key->button, MouseButtonHold) &&
-						_isButtonHolding)
+					const bool _isButtonHolding = M_INPUT.GetIsButtonHolding();
+					using Iterator = multimap<TypeIndex, ActionData>::iterator;
+					const pair <Iterator, Iterator>& _actionsType = allData.equal_range(_elementType);
+					for (Iterator _it = _actionsType.first; _it != _actionsType.second; ++_it)
 					{
-						(*callback.get()->digitalCallback.get())();
-					}
-					else if (IsSpecificTypeInAllData(_elementType,
-						_key->button, MouseButtonPressed) &&
-						!_isButtonHolding)
-					{
-						(*callback.get()->digitalCallback.get())();
+						if (Mouse::isButtonPressed(CAST(Mouse::Button, _it->second.key)))
+						{
+							if ((_isButtonHolding && _it->second.type == MouseButtonHold) ||
+								(!_isButtonHolding && _it->second.type == MouseButtonPressed))
+							{
+								(*callback.get()->digitalCallback.get())();
+								break;
+							}
+						}
 					}
 				}
 
@@ -174,31 +178,42 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 #pragma region Controler
 				else if (const ControllerJoystickPressed* _key = _event->getIf<ControllerJoystickPressed>())
 				{
-					if (IsInAllData(_elementType, _key->button))
+					if (HasJoystickIDInAllData(_elementType, _key->joystickId) &&
+						IsInAllData(_elementType, _key->button))
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
 				}
 				else if (const ControllerJoystickReleased* _key = _event->getIf<ControllerJoystickReleased>())
 				{
-					if (IsInAllData(_elementType, _key->button))
+					if (HasJoystickIDInAllData(_elementType, _key->joystickId) && 
+						IsInAllData(_elementType, _key->button))
 					{
 						(*callback.get()->digitalCallback.get())();
 					}
 				}
 				else if (const ControllerJoystickMoved* _key = _event->getIf<ControllerJoystickMoved>())
 				{
-					//callback();
-					//TODO faire un vector2f avec le float et l'axe
-					//callback.axis2Callback();
+					if (HasJoystickIDInAllData(_elementType, _key->joystickId))
+					{
+						//callback();
+						//TODO faire un vector2f avec le float et l'axe
+						//callback.axis2Callback();
+					}
 				}
 				else if (const ControllerJoystickConnected* _key = _event->getIf<ControllerJoystickConnected>())
 				{
-					(*callback.get()->digitalCallback.get())();
+					if (HasJoystickIDInAllData(_elementType, _key->joystickId))
+					{
+						(*callback.get()->digitalCallback.get())();
+					}
 				}
 				else if (const ControllerJoystickDisconnected* _key = _event->getIf<ControllerJoystickDisconnected>())
 				{
-					(*callback.get()->digitalCallback.get())();
+					if (HasJoystickIDInAllData(_elementType, _key->joystickId))
+					{
+						(*callback.get()->digitalCallback.get())();
+					}
 				}
 #pragma endregion
 

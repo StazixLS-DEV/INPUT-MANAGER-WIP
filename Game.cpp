@@ -21,15 +21,23 @@ void Game::Start()
     //M_CAMERA.CreateCamera(Vector2f(), Vector2f(300.0f, 300.0f), "DefaultCamera");
     M_ACTOR.BeginPlay();
     ActionMap* _actionMap = M_INPUT.CreateActionMap("Demo");
-    _actionMap->AddAction("Test", ActionData(KeyPressed, Key::A), [&]() { LOG(Display, "coucou"); });
+    //DIGITAL
+    _actionMap->AddAction("Test", ActionData(MouseEntered), [&]() { LOG(Error, "ButtonEntered"); });
+    _actionMap->AddAction("Test1", ActionData(KeyPressed, Key::A), [&]() { LOG(Display, "coucou"); });
     _actionMap->AddAction("Test2", ActionData(KeyReleased, Key::A), [&]() { LOG(Warning, "coucou"); });
     _actionMap->AddAction("Test3", ActionData(KeyHold, Key::A), [&]() { LOG(Error, "coucou"); });
     _actionMap->AddAction("Test4", ActionData(KeyPressed, Key::B), [&]() { LOG(Display, "salut"); });
     _actionMap->AddAction("Test5", ActionData(KeyReleased, Key::B), [&]() { LOG(Warning, "salut"); });
     _actionMap->AddAction("Test6", ActionData(KeyHold, Key::B), [&]() { LOG(Error, "salut"); });
-    //TODO y'a un bug qui fait que si on appuie sur une touche 
-    // pendant pendant un hold ca fait le hold de la deuxieme
-    // avant le pressed
+    _actionMap->AddAction("Test9", ActionData(KeyHold, Key::T), [&]() { LOG(Error, "Thomas"); });
+    _actionMap->AddAction("Test8", ActionData(KeyReleased, Key::T), [&]() { LOG(Warning, "Thomas"); });
+    _actionMap->AddAction("Test7", ActionData(KeyPressed, Key::T), [&]() { LOG(Display, "Thomas"); });
+    //AXIS2
+    _actionMap->AddAction("Test10", ActionData(MouseMoved), [&](const Vector2f& _position) { LOG(Error, "X: " + to_string(_position.x) + " Y: " + to_string(_position.y)); });
+    _actionMap->AddAction("Test11", ActionData(MouseMovedRaw), [&](const Vector2f& _position) { LOG(Error, "MouseMovedRaw"); });
+    //AXIS
+    _actionMap->AddAction("Test12", ActionData(MouseWheelScrolled, Mouse::Wheel::Vertical), [&](const float _position) { LOG(Error, to_string(_position)); });
+
     _actionMap->Enable();
 };
 
