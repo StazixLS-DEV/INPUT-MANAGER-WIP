@@ -178,10 +178,24 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 #pragma region Controler
 				else if (const ControllerJoystickPressed* _key = _event->getIf<ControllerJoystickPressed>())
 				{
-					if (HasJoystickIDInAllData(_elementType, _key->joystickId) &&
-						IsInAllData(_elementType, _key->button))
+					if (HasJoystickIDInAllData(_elementType, _key->joystickId))
 					{
-						(*callback.get()->digitalCallback.get())();
+						const bool _isJoystickButtonHolding = M_INPUT.GetIsJoystickButtonHolding();
+						using Iterator = multimap<TypeIndex, ActionData>::iterator;
+						const pair <Iterator, Iterator>& _actionsType = allData.equal_range(_elementType);
+						for (Iterator _it = _actionsType.first; _it != _actionsType.second; ++_it)
+						{
+							if (Joystick::isButtonPressed(_key->joystickId, _it->second.key))
+							{
+								if (_it->second.type == JoystickButtonHold ||
+									(!_isJoystickButtonHolding
+										&& _it->second.type == JoystickButtonPressed))
+								{
+									(*callback.get()->digitalCallback.get())();
+									break;
+								}
+							}
+						}
 					}
 				}
 				else if (const ControllerJoystickReleased* _key = _event->getIf<ControllerJoystickReleased>())
@@ -194,11 +208,10 @@ void Input::Action::TryToExecute(const EventInfo& _event)
 				}
 				else if (const ControllerJoystickMoved* _key = _event->getIf<ControllerJoystickMoved>())
 				{
-					if (HasJoystickIDInAllData(_elementType, _key->joystickId))
+					if (HasJoystickIDInAllData(_elementType, _key->joystickId) &&
+						IsInAllData(_elementType, _key->axis))
 					{
-						//callback();
-						//TODO faire un vector2f avec le float et l'axe
-						//callback.axis2Callback();
+						(*callback.get()->axisCallback.get())(_key->position);
 					}
 				}
 				else if (const ControllerJoystickConnected* _key = _event->getIf<ControllerJoystickConnected>())
@@ -248,41 +261,41 @@ Input::TypeIndex Input::Action::ComputeTypeIndexByActionType(const ActionType& _
 	const vector<function<TypeIndex()>>& _actionsTypes =
 	{
 		//Keyboard
-		[&]() { return type_index(typeid(PressedKey)); },			//KeyPressed
-		[&]() { return type_index(typeid(PressedKey)); },			//KeyHold
-		[&]() { return type_index(typeid(ReleasedKey)); },			//KeyReleased
+		[&]() { return type_index(TYPE_ID(PressedKey)); },						//KeyPressed
+		[&]() { return type_index(TYPE_ID(PressedKey)); },						//KeyHold
+		[&]() { return type_index(TYPE_ID(ReleasedKey)); },						//KeyReleased
 
 		//Mouse Button
-		[&]() { return type_index(typeid(PressedMouseButton)); },				//MouseButtonPressed
-		[&]() { return type_index(typeid(PressedMouseButton)); },				//MouseButtonHold
-		[&]() { return type_index(typeid(ReleasedMouseButton)); },				//MouseButtonReleased
+		[&]() { return type_index(TYPE_ID(PressedMouseButton)); },				//MouseButtonPressed
+		[&]() { return type_index(TYPE_ID(PressedMouseButton)); },				//MouseButtonHold
+		[&]() { return type_index(TYPE_ID(ReleasedMouseButton)); },				//MouseButtonReleased
 		//Mouse 
-		[&]() { return type_index(typeid(ScrolledMouseWheel)); },				//MouseWheelScrolled
-		[&]() { return type_index(typeid(MovedMouse)); },						//MouseMoved
-		[&]() { return type_index(typeid(MovedRawMouse)); },					//MouseMovedRaw
-		[&]() { return type_index(typeid(EnteredMouse)); },						//MouseEntered
-		[&]() { return type_index(typeid(LeftMouse)); },						//MouseLeft
+		[&]() { return type_index(TYPE_ID(ScrolledMouseWheel)); },				//MouseWheelScrolled
+		[&]() { return type_index(TYPE_ID(MovedMouse)); },						//MouseMoved
+		[&]() { return type_index(TYPE_ID(MovedRawMouse)); },					//MouseMovedRaw
+		[&]() { return type_index(TYPE_ID(EnteredMouse)); },					//MouseEntered
+		[&]() { return type_index(TYPE_ID(LeftMouse)); },						//MouseLeft
 
 		//Window
-		[&]() { return type_index(typeid(ResizedWindow)); },					//Resized
-		[&]() { return type_index(typeid(LostFocus)); },						//FocusLost
-		[&]() { return type_index(typeid(GainedFocus)); },						//FocusGained
-		[&]() { return type_index(typeid(EnteredText)); },						//TextEntered
-		[&]() { return type_index(typeid(ClosedWindow)); },  					//Closed
+		[&]() { return type_index(TYPE_ID(ResizedWindow)); },					//Resized
+		[&]() { return type_index(TYPE_ID(LostFocus)); },						//FocusLost
+		[&]() { return type_index(TYPE_ID(GainedFocus)); },						//FocusGained
+		[&]() { return type_index(TYPE_ID(EnteredText)); },						//TextEntered
+		[&]() { return type_index(TYPE_ID(ClosedWindow)); },  					//Closed
 
 		//Controler
-		[&]() { return type_index(typeid(ControllerJoystickPressed)); },		//JoystickButtonPressed
-		[&]() { return type_index(typeid(ControllerJoystickPressed)); },		//JoystickButtonHold
-		[&]() { return type_index(typeid(ControllerJoystickReleased)); },		//JoystickButtonReleased
-		[&]() { return type_index(typeid(ControllerJoystickMoved)); },			//JoystickMoved
-		[&]() { return type_index(typeid(ControllerJoystickConnected)); },		//JoystickConnected
-		[&]() { return type_index(typeid(ControllerJoystickDisconnected)); },	//JoystickDisconnected
+		[&]() { return type_index(TYPE_ID(ControllerJoystickPressed)); },		//JoystickButtonPressed
+		[&]() { return type_index(TYPE_ID(ControllerJoystickPressed)); },		//JoystickButtonHold
+		[&]() { return type_index(TYPE_ID(ControllerJoystickReleased)); },		//JoystickButtonReleased
+		[&]() { return type_index(TYPE_ID(ControllerJoystickMoved)); },			//JoystickMoved
+		[&]() { return type_index(TYPE_ID(ControllerJoystickConnected)); },		//JoystickConnected
+		[&]() { return type_index(TYPE_ID(ControllerJoystickDisconnected)); },	//JoystickDisconnected
 
 		//Screen
-		[&]() { return type_index(typeid(BeganTouch)); },						//TouchBegan
-		[&]() { return type_index(typeid(MovedTouch)); },						//TouchMoved
-		[&]() { return type_index(typeid(EndedTouch)); },						//TouchEnded
-		[&]() { return type_index(typeid(ChangedSensor)); }						//SensorChanged
+		[&]() { return type_index(TYPE_ID(BeganTouch)); },						//TouchBegan
+		[&]() { return type_index(TYPE_ID(MovedTouch)); },						//TouchMoved
+		[&]() { return type_index(TYPE_ID(EndedTouch)); },						//TouchEnded
+		[&]() { return type_index(TYPE_ID(ChangedSensor)); }					//SensorChanged
 	};
 
 	return _actionsTypes[_actionType]();

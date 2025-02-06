@@ -39,17 +39,25 @@ void Input::InputManager::Update(RenderWindow& _window)
         {
             isKeyHolding = true;
         }
-        if (_event->is<ReleasedKey>() && isKeyHolding)
+        else if (_event->is<ReleasedKey>() && isKeyHolding)
         {
             isKeyHolding = false;
         }
-        if (_event->is<PressedMouseButton>() && !isButtonHolding)
+        else if (_event->is<PressedMouseButton>() && !isButtonHolding)
         {
             isButtonHolding = true;
         }
-        if (_event->is<ReleasedMouseButton>() && isButtonHolding)
+        else if (_event->is<ReleasedMouseButton>() && isButtonHolding)
         {
             isButtonHolding = false;
+        }
+        else if (_event->is<PressedMouseButton>() && !isButtonHolding)
+        {
+            isJoystickButtonHolding = true;
+        }
+        else if (_event->is<ReleasedMouseButton>() && isButtonHolding)
+        {
+            isJoystickButtonHolding = false;
         }
     }
 }
