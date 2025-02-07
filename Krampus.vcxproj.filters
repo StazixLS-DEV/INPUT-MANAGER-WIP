@@ -130,6 +130,15 @@
     <Filter Include="Scripts\Managers\Input">
       <UniqueIdentifier>{01d00604-2a3f-4763-8f35-559c8e93299d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts\Managers\Input\ActionMap">
+      <UniqueIdentifier>{f1d3ca1f-29f6-412b-a856-0eb0e7b72000}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Managers\Input\ActionMap\Action">
+      <UniqueIdentifier>{75ea123f-aba8-4e72-aace-c684917e4a56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scripts\Managers\Input\ActionMap\Action\JoystickTest">
+      <UniqueIdentifier>{d36f7907-39be-412d-894f-2543aa0d814f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TextObject.cpp">
@@ -267,11 +276,11 @@
     <ClCompile Include="InputManager.cpp">
       <Filter>Scripts\Managers\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Action.cpp">
-      <Filter>Scripts\Managers\Input</Filter>
-    </ClCompile>
     <ClCompile Include="ActionMap.cpp">
-      <Filter>Scripts\Managers\Input</Filter>
+      <Filter>Scripts\Managers\Input\ActionMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Action.cpp">
+      <Filter>Scripts\Managers\Input\ActionMap\Action</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -434,11 +443,11 @@
     <ClInclude Include="InputManager.h">
       <Filter>Scripts\Managers\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Action.h">
-      <Filter>Scripts\Managers\Input</Filter>
-    </ClInclude>
     <ClInclude Include="ActionMap.h">
-      <Filter>Scripts\Managers\Input</Filter>
+      <Filter>Scripts\Managers\Input\ActionMap</Filter>
+    </ClInclude>
+    <ClInclude Include="Action.h">
+      <Filter>Scripts\Managers\Input\ActionMap\Action</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
