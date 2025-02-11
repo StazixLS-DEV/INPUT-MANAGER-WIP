@@ -7,6 +7,7 @@ namespace Input
 	typedef optional<Event> EventInfo;
 	using TypeIndex = type_index;
 	using Key = Keyboard::Key;
+	using Button = Mouse::Button;
 
 	//Keyboard
 	using PressedKey = Event::KeyPressed;
@@ -263,7 +264,7 @@ namespace Input
 		ValueType value;
 		ActionType type;
 		int key;
-		int JoystickId;
+		int joystickId;
 
 		/// <summary>
 		/// Constructeur pour les ActionTypes :
@@ -291,7 +292,7 @@ namespace Input
 			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
 			key = CAST(int, _key);
-			JoystickId = -1;
+			joystickId = -1;
 		}
 		/// <summary>
 		/// Constructeur pour l'ActionType :
@@ -308,14 +309,12 @@ namespace Input
 			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
 			key = CAST(int, _key);
-			JoystickId = _joystickID;
+			joystickId = _joystickID;
 		}
 		/// <summary>
 		/// Constructeur pour les ActionTypes :
 		/// JoystickButtonPressed /
 		/// JoystickButtonReleased /
-		/// JoystickConnected /
-		///	JoystickDisconnected 
 		/// </summary>
 		/// <param name="_type"></param>
 		/// <param name="_button">Boutton de Joystick</param>
@@ -327,7 +326,7 @@ namespace Input
 			value = ComputeValueTypeWithActionType(_type);
 			type = _type;
 			key = _button;
-			JoystickId = _joystickID;
+			joystickId = _joystickID;
 		}
 		/// <summary>
 		/// Constructeur pour les ActionTypes :
@@ -343,6 +342,8 @@ namespace Input
 		///	FocusLost /
 		///	FocusGained /
 		///	TextEntered /
+		/// JoystickConnected /
+		///	JoystickDisconnected /
 		/// TouchBegan /
 		/// TouchMoved /
 		///	TouchEnded /

@@ -8,9 +8,9 @@ namespace Input
 	class InputManager : public Singleton<InputManager>
 	{
 		map<string, ActionMap*> actionsMaps;
-		bool isKeyHolding;
-		bool isButtonHolding;
-		bool isJoystickButtonHolding;
+		map<Key, bool> keysIsHolding;
+		map<Button, bool> mouseButtonsIsHolding;
+		vector<vector<bool>> joysticksButtonsIsHolding;
 
 	private:
 		FORCEINLINE void AddActionMap(const pair<string, ActionMap*>& _actionMap)
@@ -18,17 +18,17 @@ namespace Input
 			actionsMaps.insert(_actionMap);
 		}
 	public:
-		FORCEINLINE bool GetIsKeyHolding() const
+		FORCEINLINE bool GetIsKeyHolding(const Key& _key) const
 		{
-			return isKeyHolding;
+			return keysIsHolding.at(_key);
 		}
-		FORCEINLINE bool GetIsButtonHolding() const
+		FORCEINLINE bool GetIsMouseButtonHolding(const Button& _mouseButton) const
 		{
-			return isButtonHolding;
+			return mouseButtonsIsHolding.at(_mouseButton);
 		}
-		FORCEINLINE bool GetIsJoystickButtonHolding() const
+		FORCEINLINE bool GetIsJoystickButtonHolding(const int _joystickId, const int _joystickButton) const
 		{
-			return isJoystickButtonHolding;
+			return joysticksButtonsIsHolding[_joystickId][_joystickButton];
 		}
 		FORCEINLINE ActionMap* GetActionMapByName(const string& _name)
 		{
@@ -46,8 +46,9 @@ namespace Input
 		{
 			if (actionsMaps.contains(_name))
 			{
-				LOG(Error, "This ActionMap's name (" + _name + ") already used !");
-				return nullptr;
+				LOG(Warning, "This ActionMap's name (" + _name + ") already used,\
+					I return the ActionMap with name asked to create !");
+				return GetActionMapByName(_name);
 			}
 
 			ActionMap* _actionMap = new ActionMap(_name);
@@ -60,6 +61,10 @@ namespace Input
 		~InputManager();
 
 	private:
+		void Init();
+		void InitKeysHolding();
+		void InitMouseButtonHolding();
+		void InitJoystickButtonHolding();
 		void UpdateActionMaps(const EventInfo& _event);
 
 	public:

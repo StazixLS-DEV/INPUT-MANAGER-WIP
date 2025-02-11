@@ -32,13 +32,15 @@ void Game::Start()
     _actionMap->AddAction("Test9", ActionData(KeyHold, KeyType::T), [&]() { LOG(Error, "Thomas"); });
     _actionMap->AddAction("Test8", ActionData(KeyReleased, KeyType::T), [&]() { LOG(Warning, "Thomas"); });
     _actionMap->AddAction("Test7", ActionData(KeyPressed, KeyType::T), [&]() { LOG(Display, "Thomas"); });
+    _actionMap->AddAction("Test100", ActionData(MouseButtonHold, KeyType::Left), [&]() { LOG(Error, "Truc"); });
+    _actionMap->AddAction("Test101", ActionData(MouseButtonPressed, KeyType::Left), [&]() { LOG(Display, "Truc"); });
+    _actionMap->AddAction("Test102", ActionData(MouseButtonReleased, KeyType::Left), [&]() { LOG(Warning, "Truc"); });
     //AXIS2
     _actionMap->AddAction("Test10", ActionData(MouseMoved), [&](const Vector2f& _position) { LOG(Error, "X: " + to_string(_position.x) + " Y: " + to_string(_position.y)); });
-    _actionMap->AddAction("Test11", ActionData(MouseMovedRaw), [&](const Vector2f& _position) { LOG(Error, "MouseMovedRaw"); });
+    //_actionMap->AddAction("Test11", ActionData(MouseMovedRaw), [&](const Vector2f& _position) { LOG(Error, "MouseMovedRaw"); });
     //AXIS
     _actionMap->AddAction("Test12", ActionData(MouseWheelScrolled, KeyType::Vertical), [&](const float _position) { LOG(Error, to_string(_position)); });
     _actionMap->AddAction("Test99", ActionData(JoystickMoved, 0, KeyType::LeftJoystickX), [&](const float _position) { LOG(Error, "manette :" + to_string(_position)); });
-
     _actionMap->Enable();
 };
 

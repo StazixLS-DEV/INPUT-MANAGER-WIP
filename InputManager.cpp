@@ -3,8 +3,7 @@
 Input::InputManager::InputManager()
 {
     actionsMaps = map<string, ActionMap*>();
-    isKeyHolding = false;
-    isButtonHolding = false;
+    Init();
 }
 
 Input::InputManager::~InputManager()
@@ -12,6 +11,43 @@ Input::InputManager::~InputManager()
     for (const pair<string, ActionMap*>& _pair : actionsMaps)
     {
         delete _pair.second;
+    }
+}
+
+void Input::InputManager::Init()
+{
+    InitKeysHolding();
+    InitMouseButtonHolding();
+    InitJoystickButtonHolding();
+}
+
+void Input::InputManager::InitKeysHolding()
+{
+    for (int _keyIndex = 0; _keyIndex < Keyboard::KeyCount; _keyIndex++)
+    {
+        const Key& _key = CAST(Key, _keyIndex);
+        keysIsHolding[_key] = false;
+    }
+}
+
+void Input::InputManager::InitMouseButtonHolding()
+{
+    for (int _keyIndex = 0; _keyIndex < Mouse::ButtonCount; _keyIndex++)
+    {
+        const Button& _mouseButton = CAST(Button, _keyIndex);
+        mouseButtonsIsHolding[_mouseButton] = false;
+    }
+}
+
+void Input::InputManager::InitJoystickButtonHolding()
+{
+    for (int _joystickId = 0; _joystickId < Joystick::Count; _joystickId++)
+    {
+        joysticksButtonsIsHolding.push_back(vector<bool>());
+        for (int _keyIndex = 0; _keyIndex < Joystick::ButtonCount; _keyIndex++)
+        {
+            joysticksButtonsIsHolding[_joystickId].push_back(false);
+        }
     }
 }
 
@@ -28,6 +64,7 @@ void Input::InputManager::Update(RenderWindow& _window)
 {
     while (const EventInfo& _event = _window.pollEvent())
     {
+        LOG(Display, "IN");
         if (_event->is<Event::Closed>())
         {
             _window.close();
@@ -35,29 +72,78 @@ void Input::InputManager::Update(RenderWindow& _window)
         }
 
         UpdateActionMaps(_event);
-        if (_event->is<PressedKey>() && !isKeyHolding)
+        if (_event->is<PressedKey>())
         {
-            isKeyHolding = true;
+            for (int _keyIndex = 0; _keyIndex < Keyboard::KeyCount; _keyIndex++)
+            {
+                const Key& _key = CAST(Key, _keyIndex);
+                if (Keyboard::isKeyPressed(_key) && !keysIsHolding.at(_key))
+                {
+                    keysIsHolding[_key] = true;
+                }
+            }
         }
-        else if (_event->is<ReleasedKey>() && isKeyHolding)
+        else if (_event->is<ReleasedKey>())
         {
-            isKeyHolding = false;
+            for (int _keyIndex = 0; _keyIndex < Keyboard::KeyCount; _keyIndex++)
+            {
+                const Key& _key = CAST(Key, _keyIndex);
+                if (!Keyboard::isKeyPressed(_key) && keysIsHolding.at(_key))
+                {
+                    keysIsHolding[_key] = false;
+                }
+            }
         }
-        else if (_event->is<PressedMouseButton>() && !isButtonHolding)
+        else if (_event->is<PressedMouseButton>())
         {
-            isButtonHolding = true;
+            for (int _keyIndex = 0; _keyIndex < Mouse::ButtonCount; _keyIndex++)
+            {
+                const Button& _mouseButton = CAST(Button, _keyIndex);
+                if (Mouse::isButtonPressed(_mouseButton) && !mouseButtonsIsHolding.at(_mouseButton))
+                {
+                    mouseButtonsIsHolding[_mouseButton] = true;
+                }
+            }
         }
-        else if (_event->is<ReleasedMouseButton>() && isButtonHolding)
+        else if (_event->is<ReleasedMouseButton>())
         {
-            isButtonHolding = false;
+            for (int _keyIndex = 0; _keyIndex < Mouse::ButtonCount; _keyIndex++)
+            {
+                const Button& _mouseButton = CAST(Button, _keyIndex);
+                if (!Mouse::isButtonPressed(_mouseButton) && mouseButtonsIsHolding.at(_mouseButton))
+                {
+                    mouseButtonsIsHolding[_mouseButton] = false;
+                }
+            }
         }
-        else if (_event->is<PressedMouseButton>() && !isButtonHolding)
+        else if (_event->is<ControllerJoystickPressed>())
         {
-            isJoystickButtonHolding = true;
+            for (int _joystickId = 0; _joystickId < Joystick::Count; _joystickId++)
+            {
+                if (!Joystick::isConnected(_joystickId)) continue;
+                for (int _keyIndex = 0; _keyIndex < Joystick::ButtonCount; _keyIndex++)
+                {
+                    if (Joystick::isButtonPressed(_joystickId, _keyIndex) && !joysticksButtonsIsHolding[_joystickId][_keyIndex])
+                    {
+                        joysticksButtonsIsHolding[_joystickId][_keyIndex] = true;
+                    }
+                }
+            }
         }
-        else if (_event->is<ReleasedMouseButton>() && isButtonHolding)
+        else if (_event->is<ControllerJoystickReleased>())
         {
-            isJoystickButtonHolding = false;
+            for (int _joystickId = 0; _joystickId < Joystick::Count; _joystickId++)
+            {
+                if (!Joystick::isConnected(_joystickId)) continue;
+                for (int _keyIndex = 0; _keyIndex < Joystick::ButtonCount; _keyIndex++)
+                {
+                    if (!Joystick::isButtonPressed(_joystickId, _keyIndex) && joysticksButtonsIsHolding[_joystickId][_keyIndex])
+                    {
+                        joysticksButtonsIsHolding[_joystickId][_keyIndex] = false;
+                    }
+                }
+            }
         }
     }
+
 }
